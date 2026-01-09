@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS ecommerce_db;
+CREATE DATABASE ecommerce_db;
+USE ecommerce_db;
+
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
@@ -53,4 +57,59 @@ CREATE TABLE order_items (
 
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
+----
+-- New table: product categories
+CREATE TABLE categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add optional category to existing products table
+ALTER TABLE products
+  ADD COLUMN category_id INT NULL,
+  ADD CONSTRAINT fk_products_category
+    FOREIGN KEY (category_id) REFERENCES categories(id);
+
+    -- Addresses for users (shipping/billing)
+    CREATE TABLE addresses (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      address_line1 VARCHAR(255) NOT NULL,
+      address_line2 VARCHAR(255),
+      city VARCHAR(100) NOT NULL,
+      state VARCHAR(100),
+      country VARCHAR(100) NOT NULL,
+      postal_code VARCHAR(20),
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+
+
+   -- Cart per user
+   CREATE TABLE carts (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     user_id INT NOT NULL,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     FOREIGN KEY (user_id) REFERENCES users(id)
+   );
+
+   -- Items in a cart
+   CREATE TABLE cart_items (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     cart_id INT NOT NULL,
+     product_id INT NOT NULL,
+     quantity INT NOT NULL DEFAULT 1,
+     CHECK (quantity > 0),
+     FOREIGN KEY (cart_id) REFERENCES carts(id)
+       ON DELETE CASCADE,
+     FOREIGN KEY (product_id) REFERENCES products(id)
+   );
+
+
+   CREATE INDEX idx_products_category ON products(category_id);
+   CREATE INDEX idx_orders_user ON orders(user_id);
+   CREATE INDEX idx_addresses_user ON addresses(user_id);
+   CREATE INDEX idx_cart_items_cart ON cart_items(cart_id);
 
