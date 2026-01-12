@@ -1,4 +1,4 @@
-📦 SQL E-Commerce Database Project
+SQL E-Commerce Database Project
 
 A fully structured SQL database that simulates the backend of a modern e-commerce platform. It includes users, products, categories, inventory, orders, order items, addresses, carts, and analytics queries. This project demonstrates relational database design, foreign key usage, indexing, seed data creation, and real-world SQL analytics.
 
