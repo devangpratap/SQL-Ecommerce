@@ -1,0 +1,3 @@
+# Ensure GitHub Linguist detects SQL files
+*.sql linguist-detectable
+*.sql linguist-language=SQL
